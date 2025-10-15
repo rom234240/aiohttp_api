@@ -33,7 +33,7 @@ class Advertisement(Base):
             'title': self.title,
             'description': self.description,
             'created_at': self.created_at.isoformat(),
-            'ownet': self.owner
+            'owner': self.owner
         }
     
 @web.middleware
