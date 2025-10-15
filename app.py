@@ -25,7 +25,7 @@ class Advertisement(Base):
     title = Column(String(100), nullable=False)
     description = Column(String, nullable=False)
     created_at = Column(DateTime, nullable=False, default=datetime.utcnow)
-    owner =Column(String(50), nullable=False)
+    owner = Column(String(50), nullable=False)
 
     def to_dict(self):
         return {
