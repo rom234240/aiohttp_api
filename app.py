@@ -35,7 +35,10 @@ class Advertisement(Base):
             'created_at': self.created_at.isoformat(),
             'owner': self.owner
         }
-    
+
+def json_dumps(data):
+    return json.dumps(data, ensure_ascii=False, indent=2)
+
 @web.middleware
 async def json_middleware(request, handler):
     if request.method in ['POST', 'PUT'] and request.content_type == 'application/json':
@@ -53,7 +56,7 @@ async def create_ad(request):
         return web.json_response(
             {'error': 'Missing data'},
             status=400,
-            dumps=json.dumps
+            dumps=json_dumps
         )
     
     async with AsyncSessionLocal() as session:
@@ -68,7 +71,7 @@ async def create_ad(request):
         return web.json_response(
             new_ad.to_dict(),
             status=201,
-            dumps=json.dumps
+            dumps=json_dumps
         )
     
 async def get_ad(request):
@@ -81,11 +84,11 @@ async def get_ad(request):
             return web.json_response(
                 {'error': 'Advertisement not found'},
                 status=404,
-                dumps=json.dumps
+                dumps=json_dumps
             )
         return web.json_response(
             ad.to_dict(),
-            dumps=json.dumps
+            dumps=json_dumps
         )
     
 async def delete_ad(request):
@@ -117,7 +120,7 @@ async def handle_root(request):
             'GET /aiohttp/{id}': 'Get advertisement',
             'DELETE /aiohttp/{id}': 'Delete advertisement'
         }
-    })
+    }, dumps=json_dumps)
     
 async def init_app():
     app = web.Application(middlewares=[json_middleware])
