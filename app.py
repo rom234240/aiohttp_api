@@ -21,7 +21,7 @@ Base = declarative_base()
 class Advertisement(Base):
     __tablename__ = 'advertisement'
 
-    id = Column(Integer, primary_rey=True)
+    id = Column(Integer, primary_key=True)
     title = Column(String(100), nullable=False)
     description = Column(String, nullable=False)
     created_at = Column(DateTime, nullable=False, default=datetime.utcnow)
@@ -126,8 +126,8 @@ async def init_app():
 
     app.router.add_get('/', handle_root)
     app.router.add_post('/aiohttp', create_ad)
-    app.router.add_get('/aiohttp/{ad_id:\d+}', get_ad)
-    app.router.add_delete('/aiohttp/{ad_id:\d+}', delete_ad)
+    app.router.add_get(r'/aiohttp/{ad_id:\d+}', get_ad)
+    app.router.add_delete(r'/aiohttp/{ad_id:\d+}', delete_ad)
 
     return app
 
