@@ -1,0 +1,58 @@
+### Тест 1: Проверка сервера
+GET http://localhost:5000/
+
+### Тест 2: Создание первого объявления
+POST http://localhost:5000/aiohttp
+Content-Type: application/json
+
+{
+  "title": "Продам ноутбук",
+  "description": "Игровой ноутбук в отличном состоянии",
+  "owner": "Анна"
+}
+
+### Тест 3: Создание второго объявления
+POST http://localhost:5000/aiohttp
+Content-Type: application/json
+
+{
+  "title": "Сниму квартиру",
+  "description": "Ищу 2-комнатную квартиру в центре",
+  "owner": "Дмитрий"
+}
+
+### Тест 4: Получение первого объявления
+GET http://localhost:5000/aiohttp/1
+
+### Тест 5: Получение второго объявления
+GET http://localhost:5000/aiohttp/2
+
+### Тест 6: Попытка получения несуществующего объявления
+GET http://localhost:5000/aiohttp/999
+
+### Тест 7: Создание объявления без обязательных полей
+POST http://localhost:5000/aiohttp
+Content-Type: application/json
+
+{
+  "title": "Только заголовок"
+}
+
+### Тест 8: Удаление первого объявления
+DELETE http://localhost:5000/aiohttp/1
+
+### Тест 9: Проверка что первое объявление удалено
+GET http://localhost:5000/aiohttp/1
+
+### Тест 10: Создание еще одного объявления
+POST http://localhost:5000/aiohttp
+Content-Type: application/json
+
+{
+  "title": "Отдам котят",
+  "description": "Милые котята ищут дом",
+  "owner": "Мария"
+}
+
+### Тест 11: Получение созданного объявления
+GET http://localhost:5000/aiohttp/3
