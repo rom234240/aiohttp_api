@@ -1,0 +1,133 @@
+### AioHTTP Advertisement API Tests
+### Для использования установите расширение REST Client в VS Code
+
+### Base URL
+@base_url = http://localhost:5000
+
+### 1. Получение информации о API
+GET {{base_url}}/
+
+### 2. Регистрация нового пользователя
+# @name register
+POST {{base_url}}/register
+Content-Type: application/json
+
+{
+    "username": "testuser",
+    "email": "test@example.com",
+    "password": "testpassword123"
+}
+
+### 3. Сохраняем токен из регистрации
+@auth_token = {{register.response.body.$.token}}
+
+### 4. Вход пользователя (альтернативный способ получения токена)
+# @name login
+POST {{base_url}}/login
+Content-Type: application/json
+
+{
+    "email": "test@example.com",
+    "password": "testpassword123"
+}
+
+### 5. Сохраняем токен из входа (перезаписываем)
+@auth_token = {{login.response.body.$.token}}
+
+### 6. Создание объявления (требует аутентификации)
+# @name create_ad
+POST {{base_url}}/advertisements
+Content-Type: application/json
+Authorization: Bearer {{auth_token}}
+
+{
+    "title": "Test Advertisement",
+    "description": "This is a test advertisement created with authentication"
+}
+
+### 7. Сохраняем ID созданного объявления
+@ad_id = {{create_ad.response.body.$.id}}
+
+### 8. Получение объявления по ID
+GET {{base_url}}/advertisements/{{ad_id}}
+
+### 9. Попытка удалить объявление без аутентификации (должна завершиться ошибкой)
+DELETE {{base_url}}/advertisements/{{ad_id}}
+
+### 10. Удаление объявления с аутентификацией (должно успешно выполниться)
+DELETE {{base_url}}/advertisements/{{ad_id}}
+Authorization: Bearer {{auth_token}}
+
+### 11. Попытка создания объявления без токена (должна завершиться ошибкой)
+POST {{base_url}}/advertisements
+Content-Type: application/json
+
+{
+    "title": "Should Fail",
+    "description": "This should fail without authentication"
+}
+
+### 12. Тестирование валидации email при регистрации
+POST {{base_url}}/register
+Content-Type: application/json
+
+{
+    "username": "baduser",
+    "email": "invalid-email",
+    "password": "testpassword123"
+}
+
+### 13. Тестирование валидации пароля при регистрации
+POST {{base_url}}/register
+Content-Type: application/json
+
+{
+    "username": "baduser2",
+    "email": "test2@example.com",
+    "password": "short"
+}
+
+### 14. Попытка входа с неверными данными
+POST {{base_url}}/login
+Content-Type: application/json
+
+{
+    "email": "wrong@example.com",
+    "password": "wrongpassword"
+}
+
+### 15. Создание второго пользователя для тестирования прав доступа
+# @name register_user2
+POST {{base_url}}/register
+Content-Type: application/json
+
+{
+    "username": "testuser2",
+    "email": "test2@example.com",
+    "password": "testpassword456"
+}
+
+### 16. Сохраняем токен второго пользователя
+@auth_token2 = {{register_user2.response.body.$.token}}
+
+### 17. Создание объявления вторым пользователем
+# @name create_ad_user2
+POST {{base_url}}/advertisements
+Content-Type: application/json
+Authorization: Bearer {{auth_token2}}
+
+{
+    "title": "Second User Advertisement",
+    "description": "This advertisement belongs to the second user"
+}
+
+### 18. Сохраняем ID объявления второго пользователя
+@ad_id2 = {{create_ad_user2.response.body.$.id}}
+
+### 19. Попытка первого пользователя удалить объявление второго пользователя (должна завершиться ошибкой 403)
+DELETE {{base_url}}/advertisements/{{ad_id2}}
+Authorization: Bearer {{auth_token}}
+
+### 20. Получение всех объявлений (если бы такой эндпоинт был)
+### Note: У нас нет эндпоинта для получения всех объявлений, но можно проверить получение конкретного
+GET {{base_url}}/advertisements/{{ad_id2}}
